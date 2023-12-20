@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>登录</title>
+    <!-- 请勿在项目正式环境中引用该 layui.css 地址 -->
+    <link rel="stylesheet" href="node_modules/layui/dist/css/layui.css" />
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.7.1/jquery.js"></script>
+    <!-- 请勿在项目正式环境中引用该 layui.js 地址 -->
+    <script src="node_modules/layui/dist/layui.js"></script>
+  </head>
+  <body>
+    <style>
+      .demo-login-container {
+        width: 320px;
+        margin: 21px auto 0;
+      }
+      .demo-login-other .layui-icon {
+        position: relative;
+        display: inline-block;
+        margin: 0 2px;
+        top: 2px;
+        font-size: 26px;
+      }
+      .layui-form {
+        margin-top: 200px;
+      }
+      h1 {
+        text-align: center;
+      }
+    </style>
+    <form class="layui-form">
+      <h1>登录</h1>
+      <div class="demo-login-container">
+        <div class="layui-form-item">
+          <div class="layui-input-wrap">
+            <div class="layui-input-prefix">
+              <i class="layui-icon layui-icon-username"></i>
+            </div>
+            <input
+              type="text"
+              name="username"
+              lay-verify="required"
+              placeholder="用户名"
+              lay-reqtext="请填写用户名"
+              autocomplete="off"
+              class="layui-input"
+              lay-affix="clear"
+              id="username"
+            />
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <div class="layui-input-wrap">
+            <div class="layui-input-prefix">
+              <i class="layui-icon layui-icon-password"></i>
+            </div>
+            <input
+              type="password"
+              name="password"
+              lay-verify="required"
+              placeholder="密   码"
+              lay-reqtext="请填写密码"
+              autocomplete="off"
+              class="layui-input"
+              lay-affix="eye"
+              id="pas"
+            />
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <div class="layui-row"></div>
+        </div>
+        <div class="layui-form-item">
+          <input
+            type="checkbox"
+            name="remember"
+            lay-skin="primary"
+            title="记住密码"
+          />
+          <a href="#forget" style="float: right; margin-top: 7px">忘记密码？</a>
+        </div>
+        <div class="layui-form-item">
+          <button
+            class="layui-btn layui-btn-fluid"
+            lay-submit
+            lay-filter="demo-login"
+            id="loginBtn"
+          >
+            登录
+          </button>
+        </div>
+      </div>
+    </form>
+    <script>
+      $(function () {
+        $("#loginBtn").click(function () {
+          event.preventDefault();
+          let obj = {
+            username: $("#username").val(),
+            password: $("#pas").val(),
+          };
+          $.ajax({
+            url: "http://localhost:3000/api/login",
+            type: "post",
+            data: obj,
+            success: function (res) {
+              // console.log(res.token);
+              localStorage.setItem("token", res.token);
+              if (res.code == 200) {
+                alert("登录成功");
+                location.assign("index.html");
+              }
+            },
+          });
+        });
+        $("#Jumpreg").on("click", function () {
+          location.assign("register.html");
+        });
+      });
+    </script>
+  </body>
+</html>

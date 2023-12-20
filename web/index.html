@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>商品列表</title>
+    <link rel="stylesheet" href="./node_modules/layui/dist/css/layui.css" />
+    <script src="./node_modules//layui/dist/layui.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.7.1/jquery.js"></script>
+  </head>
+  <style>
+    #box {
+      width: 800px;
+      min-height: 500px;
+      /* border: 1px solid black; */
+      margin: 50px auto;
+    }
+    h1 {
+      text-align: center;
+    }
+    table {
+      width: 700px;
+      text-align: center;
+      margin: 15px auto;
+      border: 1px solid #ccc;
+      border-collapse: collapse;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    tr,
+    td,
+    th {
+      height: 45px;
+    }
+  </style>
+  <body>
+    <div id="box">
+      <h1>商品列表</h1>
+      <table border="1">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>商品名称</th>
+            <th>价格</th>
+            <th>库存</th>
+            <th>VIP价格</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <script>
+      $(function () {
+        runderList();
+        $("tbody").on("click", tbodyFun);
+      });
+
+      function tbodyFun() {
+        let token = localStorage.getItem("token");
+        if (
+          event.target.tagName == "BUTTON" &&
+          event.target.innerHTML == "下单"
+        ) {
+          let id = event.target.dataset.id;
+          $.ajax({
+            url: "http://localhost:3000/shop/create_order",
+            type: "POST",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            data: {
+              id: 11,
+              stock: 2,
+              address: "吾悦广场001",
+              username: "老李",
+              mobile: "17630352020",
+            },
+            success: function (res) {
+              console.log(res);
+              runderList();
+            },
+          });
+        }
+      }
+      function runderList() {
+        let html = "";
+        $.ajax({
+          type: "GET",
+          url: "http://localhost:3000/shop/list",
+          success: function (res) {
+            // console.log(res.data);
+            let arr = res.data;
+            arr.forEach((item) => {
+              html += `<tr>
+                           <td>${item.id}</td>
+                           <td>${item.tradeName}</td>
+                           <td>${item.price}</td>
+                           <td>${item.stock}</td>
+                           <td>${item.vipPrice}</td>
+                           <td><button class="layui-btn layui-btn-primary layui-border-blue"data-id=${item.id}>下单</button></td>
+                        </tr>`;
+            });
+            $("tbody").html(html);
+          },
+        });
+      }
+    </script>
+  </body>
+</html>
